@@ -73,10 +73,31 @@ describe('example to-do app', () => {
 
     // We simulate the hovering of a checked element and click on the cross
     cy.get('.todo-list li')
-      .get('.destroy').last().click({force: true})
+      .get('.destroy').last().click({ force: true })
 
     // We make sure the element has been deleted
     cy.contains(item)
       .should('not.exist')
+  })
+
+  it('count the number of un-done items left', () => {
+    // We rely on two existing task at each visit of the '/' path for simplicity
+    // In real world, we would need to make sure that test data used here 
+    // Is test data created for this specific test case
+    const tasksToComplete = [
+      { name: 'Pay electric bill', itemsLeftExpected: '1 item' },
+      { name: 'Walk the dog', itemsLeftExpected: '0 items' }
+    ]
+
+    // Mark the task as completed
+    for (let i = 0; i < tasksToComplete.length; i += 1) {
+      cy.contains(tasksToComplete[i].name)
+        .parent()
+        .find('input[type=checkbox]')
+        .check()
+
+      // Make sure the number of items left is 1
+      cy.get('.todo-count').should('have.text', `${tasksToComplete[i].itemsLeftExpected} left`)
+    }
   })
 })

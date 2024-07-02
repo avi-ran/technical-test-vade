@@ -23,3 +23,6 @@ ENV CI=1
 RUN npm ci
 # check if the binary was installed successfully
 RUN npx cypress verify
+
+# run the test at container startup
+CMD ["npm", "run", "test"]
